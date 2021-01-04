@@ -65,15 +65,10 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // LECTURES
 
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
 /////////////////////////////////////////////////
+
+// 01. SIMPLE ARRAY METHODS
+/*
 // Arrays methods are functions that are attached to all arrays that we create
 // Arrays are Objects that get access to special build-in methods
 
@@ -90,9 +85,95 @@ console.log([...arr]); // We can create a new copy by creating a new array and e
 console.log(arr); // It doesn't change the original Array!
 
 // SPLICE METHOD - Similar to the slice method, BUT it does change the original array
-console.log(arr.splice(2));
-console.log(arr); // the original array is changed! The extracted elements are gone!
+// console.log(arr.splice(2));
+// console.log(arr); // the original array is changed! The extracted elements are gone!
 
 // Most of the times, we use the Splice method to delete element from the Array (we don't care about the new array that we create)
 arr.splice(-1); // We eliminate the last element of the Array
 console.log(arr);
+arr.splice(1, 2); // We delete 2 elements starting from position 1
+console.log(arr);
+
+// REVERSE() - it reverses the order of the Array. It MUTATES the original array!
+arr = ['a', 'b', 'c', 'd', 'e'];
+const arr2 = ['j', 'i', 'h', 'g', 'f'];
+console.log(arr2.reverse());
+console.log(arr2); // The original array is mutated
+
+// CONCAT() - Used to concatenate 2 arrays. It DOESN'T mutate the original Array
+
+const letters = arr.concat(arr2);
+console.log(letters);
+console.log([...arr, ...arr2]); // Other way to do this
+
+// JOIN() - to join the elements of the array with the parameter we insert (the result is a String)
+console.log(letters.join(' - '));
+*/
+
+// 02. LOOPING ARRAYS: ForEach
+
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// We want to loop over these movements in order to print a message for each of them
+/*
+// With For ... of ... :
+for (const [i, movement] of movements.entries()) {
+  if (movement > 0) {
+    console.log(`Movement ${i + 1}: You deposited ${movement} dollars`);
+  } else {
+    console.log(`Movement ${i + 1}: You withdrew ${movement * -1} dollars`);
+  }
+}
+*/
+
+// With forEach (Callback function):
+/*
+movements.forEach(function (movement) {
+  if (movement > 0) {
+    console.log(`You deposited ${movement} dollars`);
+  } else {
+    console.log(`You withdrew ${movement * -1} dollars`);
+  }
+});
+
+// Accessing to the current index: we can specify it in the parameter list
+movements.forEach(function (movement, index, array) {
+  // It matters the order: (current element, index, entire array)
+  if (movement > 0) {
+    console.log(`Movement ${index + 1}: You deposited ${movement} dollars`);
+  } else {
+    console.log(
+      `Movement ${index + 1}: You withdrew ${Math.abs(movement)} dollars`
+    );
+  }
+});
+
+// Differences: You can NOT break out from a forEach loop
+*/
+
+// 03. forEach METHOD WITH MAPS AND SETS:
+/*
+const currencies = new Map([
+  ['USD', 'United States dollar'],
+  ['EUR', 'Euro'],
+  ['GBP', 'Pound sterling'],
+]);
+
+currencies.forEach(function (value, key, map) {
+  // same thing as normal array (current value, index, map)
+  console.log(`${key}: ${value}`);
+});
+
+// SET:
+const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR']);
+console.log(currenciesUnique);
+currenciesUnique.forEach(function (value, key, map) {
+  // a SET doesn't have keys and indexes!
+  console.log(`${key}: ${value}`);
+});
+*/
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+//////////////////////  BANKIST APP ///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
