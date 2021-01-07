@@ -83,10 +83,11 @@ const displayMovements = function (movements) {
 };
 
 const calcDisplayBalance = function (acc) {
-  const balance = movements.reduce(function (acc, mov) {
+  acc.balance = acc.movements.reduce(function (acc, mov) {
     return acc + mov;
   }, 0);
-  labelBalance.textContent = `${balance} €`;
+
+  labelBalance.textContent = `${acc.balance} €`;
 };
 const calcDisplaySummary = function (acc) {
   const income = acc.movements
@@ -120,6 +121,15 @@ const createUsername = function (accounts) {
 
 createUsername(accounts);
 
+const updateUI = function (acc) {
+  // Display movements
+  displayMovements(acc.movements);
+  // Display balance
+  calcDisplayBalance(acc);
+  // Display summary
+  calcDisplaySummary(acc);
+};
+
 // Login
 let currentAccount;
 
@@ -139,13 +149,64 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginPin.value = inputLoginUsername.value = '';
     inputLoginPin.blur(); // The field loses its focus
 
-    // Display movements
-    displayMovements(currentAccount.movements);
-    // Display balance
-    calcDisplayBalance(currentAccount.movements);
-    // Display summary
-    calcDisplaySummary(currentAccount);
+    updateUI(currentAccount);
   }
+});
+
+// Transfer Money
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  // Clean input fields
+  inputTransferAmount.value = inputTransferTo.value = '';
+  // Check if the amount is positive and if there is enough money
+  if (
+    amount > 0 &&
+    receiverAcc &&
+    currentAccount.balance >= amount &&
+    receiverAcc?.username !== currentAccount.username
+  ) {
+    // Add negative movement to current user
+    currentAccount.movements.push(-amount);
+    // Add positive movement to receiver user
+    receiverAcc.movements.push(amount);
+    updateUI(currentAccount);
+  }
+});
+
+// Request a Loan (if there is at least 1 deposit with at least 10% of the requested loan amount)
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount / 10)) {
+    // Add movement
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+});
+
+// Close account (delete the account object from the accounts array)
+// To delete the account from the Array we use the splice method, but to delete it we need the index --> findIndex Method
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    // Remove account
+    accounts.splice(index, 1);
+    // Hide the UI
+    containerApp.style.opacity = 0;
+  }
+  // Clean input fields
+  inputCloseUsername.value = inputClosePin.value = '';
 });
 
 /////////////////////////////////////////////////
@@ -456,4 +517,21 @@ console.log(movements.find(mov => mov < 0));
 // Useful to find an element in a big Array that has a determined characteristic
 const account = accounts.find(acc => (acc.owner = 'Jessica Davis'));
 console.log(account);
+*/
+
+// THE FINDINDEX Method - It works like find but it returns the index of the found element
+
+// THE SOME METHOD - test for a condition
+// includes method gives a boolean true/false if the condition is true (example: array includes 100)
+// We want to know if there was any deposits in the account (any positive movement)
+/*
+const anyDeposits = movements.some(mov => mov > 0);
+console.log(anyDeposits);
+
+// THE EVERY METHOD - it only returns true if ALL the elements in the callback function satisfy the fuction
+console.log(movements.every(mov => mov > 0));
+console.log(account4.movements.every(mov => mov > 0));
+
+// Separate callback
+const deposit = mov => mov > 0; // Si può usare per ogni callback function!!
 */
