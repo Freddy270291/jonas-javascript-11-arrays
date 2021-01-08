@@ -63,10 +63,11 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = ''; // per azzerare il container
 
-  movements.forEach(function (mov, i) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
@@ -207,6 +208,13 @@ btnClose.addEventListener('click', function (e) {
   }
   // Clean input fields
   inputCloseUsername.value = inputClosePin.value = '';
+});
+
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted); // We want the opposite of sorted!
+  sorted = !sorted; // Each time we click we change sorted
 });
 
 /////////////////////////////////////////////////
@@ -534,4 +542,68 @@ console.log(account4.movements.every(mov => mov > 0));
 
 // Separate callback
 const deposit = mov => mov > 0; // Si può usare per ogni callback function!!
+*/
+
+// The FLAT and FLATMAP METHODS
+// We have a nested array and we want to put all the elements in one Array:
+/*
+const arr = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+];
+console.log(arr.flat()); // We get the full array from 1 to 9
+
+// We have an Array that is deep nested:
+const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+console.log(arrDeep.flat()); // This flat takes only the first nesting
+console.log(arrDeep.flat(2)); // With this 2, it goes 2 levels deep!
+
+const accountMovements = accounts.map(acc => acc.movements);
+const allMovements = accountMovements.flat();
+console.log(allMovements);
+const overallBalance = allMovements.reduce((acc, mov) => acc + mov, 0);
+console.log(overallBalance);
+
+// FLATMAP combines a Map and a Flat method together:
+const overallBalance2 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overallBalance2);
+// FlatMap goes only 1 level deep! If more are needed, we have to use the normal flat
+*/
+/*
+// SORTING ARRAYS
+// a) with strings:
+const owners = ['Jonas', 'Zack', 'Adam', 'Martha'];
+console.log(owners.sort()); // Sorts alphabetically, it mutates the original Array
+
+// b) with numbers:
+console.log(movements);
+// console.log(movements.sort()); // It does the sorting based on strings!
+
+// Ascending
+movements.sort((a, b) => {
+  // We have to insert a comparative callback function
+  if (a > b) return 1; // Switch order
+  if (b > a) return -1; // Keep order
+});
+console.log(movements);
+
+// Descending
+movements.sort((a, b) => {
+  // We have to insert a comparative callback function
+  if (a < b) return 1; // Switch order
+  if (b < a) return -1; // Keep order
+});
+console.log(movements);
+
+// Simpler:
+// Ascending
+movements.sort((a, b) => a - b); // if A > B, then a - b will be positive
+console.log(movements);
+
+// Descending
+movements.sort((a, b) => b - a);
+console.log(movements);
 */
